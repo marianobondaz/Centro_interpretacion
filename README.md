@@ -1,3 +1,7 @@
 # Centro_interpretacion
-PCB- https://oshwlab.com/mariano.bondaz/t_motor
-STL- https://www.thingiverse.com/thing:408319
+
+#introduction
+
+#link
+Circuito impreso y esquema- https://oshwlab.com/mariano.bondaz/t_motor
+Impresion 3D- https://www.thingiverse.com/thing:408319
