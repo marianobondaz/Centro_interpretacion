@@ -6,7 +6,7 @@
 #define MOSFET_B_PIN  D3
 #define BUZZER_PIN    D1
 #define LM35_PIN      A0
-//hola 
+
 #define TIME_READ     2000
 #define TIME_ACT      10000
 
