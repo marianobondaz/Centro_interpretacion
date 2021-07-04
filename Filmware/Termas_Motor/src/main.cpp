@@ -2,13 +2,13 @@
 #include <SimpleTimer.h>
 
 #define SENSOR_PIN    D4
-#define MOSFET_A_PIN  D3
+#define MOSFET_A_PIN  D2
 #define MOSFET_B_PIN  D3
 #define BUZZER_PIN    D1
 #define LM35_PIN      A0
 
-#define TIME_READ     2000
-#define TIME_ACT      10000
+#define TIME_READ     2000      //tiempo de cada lectura del sensor
+#define TIME_ACT      60000     //sino recuerdo mal es el tiempo minimo que queda activado el motor una vez activado
 
 bool stateRead        = false;
 bool stateMotor       = false;
@@ -26,10 +26,14 @@ void readSensor();
 SimpleTimer timer1;
 SimpleTimer timer2;
 
-void motor(){
+
+void motor()
+{
   if (stateRead == true && stateMotor == false)
   {
     stateMotor = true;
+    timer1.setTimeout(TIME_ACT,motorOff);
+    stateTimer = false;
 
     //int i;
     for (  speed = 0; speed < speedMax; speed++)
@@ -43,12 +47,12 @@ void motor(){
      analogWrite(MOSFET_A_PIN, speed);        
            
   }
-  else if (stateRead == false && stateMotor == true && stateTimer == true ) //no desacelera
-  {
+  else if (stateRead == false && stateMotor == true && stateTimer == true) 
+  {  
     stateMotor = false;
     stateTimer = false;
     
-    for (speed = speedMax; speed >= 0; speed--)
+    for (speed = speedMax -80; speed >= 0; speed--)
     {
       analogWrite(MOSFET_A_PIN, speed);
       delay(20);
@@ -62,13 +66,15 @@ void motor(){
 }
 
 
-void motorOff(){
-  
+void motorOff()
+{  
+ Serial.print("timer1 = ");Serial.println(stateTimer);Serial.println("************************");
   stateTimer = true;
   
 }
 
-void readSensor(){
+void readSensor()
+{
 
   int lectura = digitalRead(SENSOR_PIN);
   Serial.print("digitalRead = ");Serial.println(lectura);
@@ -77,11 +83,9 @@ void readSensor(){
 
   //Serial.print("stateaccel = ");Serial.println(stateAccel);
   
-  if (lectura)
+  if (lectura == 1)
   {
-    stateRead = true;   
-    timer1.restartTimer(0);    
-   
+    stateRead = true;            
   }
   else
   {
@@ -93,9 +97,10 @@ void readSensor(){
 
 
 
-void setup() {
+void setup() 
+{
   
-  Serial.begin(9600);
+ 
 
   //pinMode(BUZZER_PIN, OUTPUT);
   pinMode(MOSFET_A_PIN, OUTPUT);
@@ -103,15 +108,17 @@ void setup() {
   pinMode(SENSOR_PIN, INPUT_PULLUP);
   //pinMode(LM35_PIN, INPUT);
 
-  timer1.setInterval(TIME_ACT,motorOff);
+  timer1.setTimeout(TIME_ACT,motorOff);
   timer2.setInterval(TIME_READ,readSensor);
- 
+  
   analogWriteFreq(290);  //ideal 20khz
 
-
+  Serial.begin(9600);
+  delay(2000);
 }
 
-void loop() {
+void loop()
+{
   
   timer1.run();
   timer2.run(); 
