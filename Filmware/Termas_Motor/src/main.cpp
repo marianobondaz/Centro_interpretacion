@@ -1,3 +1,6 @@
+// wemos miniD1, modulos mosfet, sensor de proximidad
+
+
 #include <Arduino.h>
 #include <SimpleTimer.h>
 
